@@ -32,9 +32,10 @@ public class Main {
                     case 1:
                         System.out.print("ID: ");
                         int id = sc.nextInt();
+                        sc.nextLine();
 
                         System.out.print("Nombre: ");
-                        String nombre = sc.next();
+                        String nombre = sc.nextLine();
 
                         System.out.print("Precio: ");
                         double precio = sc.nextDouble();
@@ -51,9 +52,10 @@ public class Main {
 
                         System.out.print("ID: ");
                         int idc = sc.nextInt();
+                        sc.nextLine();
 
                         System.out.print("Nombre: ");
-                        String nomc = sc.next();
+                        String nomc = sc.nextLine();
 
                         if (tipo == 1)
                             sistema.registrarCliente(new ClienteRegular(idc, nomc));
@@ -125,6 +127,13 @@ public class Main {
                         sistema.buscarProductoPorNombre(nombreBusqueda);
                         break;
 
+                    case 0:
+                        System.out.println("Saliendo del sistema...");
+                        break;
+
+                    default:
+                        System.out.println("Ingrese un valor entre 0 y 10");
+                        break;
                 }
 
             } catch (Exception e) {
