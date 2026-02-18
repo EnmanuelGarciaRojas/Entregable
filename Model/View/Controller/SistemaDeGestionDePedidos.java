@@ -1,151 +1,222 @@
 package Controller;
 
+import java.util.*;
+
 public class SistemaDeGestionDePedidos {
 
-    private Producto[] productos;
-    private Cliente[] clientes;
-    private Pedido[] pedidos;
+    private List<Producto> productos;
+    private List<Cliente> clientes;
+    private List<Pedido> pedidos;
 
-    private int cp,cc,cd;
+    public SistemaDeGestionDePedidos(){
+        productos = new ArrayList<>();
+        clientes = new ArrayList<>();
+        pedidos = new ArrayList<>();
+    }
 
-    public SistemaDeGestionDePedidos(int maxProducto,int maxClientes,int maxPedidos){
-        productos = new Producto[maxProducto];
-        clientes = new Cliente[maxClientes];
-        pedidos = new Pedido[maxPedidos];
+    private void validarNombre(String nombre){
+        if(nombre == null || nombre.trim().isEmpty()){
+            throw new IllegalArgumentException("El ID del producto ya existe");
+        }
     }
 
     public boolean existeProducto(int id){
-        for(int i=0;i<cp;i++){
-            if(productos[i].getId()==id)
+        for(Producto p : productos){
+            if(p.getId() == id){
                 return true;
+            }
         }
         return false;
     }
 
     public boolean existeCliente(int id){
-        for(int i=0;i<cc;i++){
-            if(clientes[i].getId()==id)
+        for(Cliente c : clientes){
+            if(c.getId() == id){
                 return true;
+            }
         }
         return false;
     }
 
     public boolean existePedido(int id){
-        for(int i=0;i<cd;i++){
-            if(pedidos[i].getId()==id)
+        for(Pedido p : pedidos){
+            if(p.getId() == id){
                 return true;
+            }
         }
         return false;
     }
 
     public void registrarProducto(Producto p){
+        validarNombre(p.getNombre());
 
-        if(existeProducto(p.getId()))
-            throw new IllegalArgumentException("ID de producto duplicado");
-
-        productos[cp++]=p;
+        if(existeProducto(p.getId())){
+            throw new IllegalArgumentException("El ID del producto ya existe");
+        }
+        
+        productos.add(p);
         System.out.println("Producto registrado correctamente.");
     }
 
     public void registrarCliente(Cliente c){
+        validarNombre(c.getNombre());
 
         if(existeCliente(c.getId())){
             throw new IllegalArgumentException("ID de cliente duplicado");
         }
-        clientes[cc++]=c;
+
+        clientes.add(c);
         System.out.println("Cliente registrado correctamente.");
     }
 
-    public Producto buscarProducto(int id){
-
-        if(cp == 0){
-            System.out.println("No hay productos registrados.");
-            return null;
+    public void buscarProducto(int id) throws ProductoNoEncontradoException{
+        for(Producto p : productos){
+            if(p.getId() == id){
+                System.out.println("Producto encontrado");
+                System.out.println("ID: " + p.getId() +
+                                    "\nNombre: " + p.getNombre() +
+                                    "\nPrecio: " + p.getPrecio() +
+                                    "\nStock: " + p.getStock()
+                );
+                return;
+            }
         }
 
-        for(int i=0;i<cp;i++)
-            if(productos[i].getId()==id)
-                return productos[i];
-
-        System.out.println("Producto no encontrado.");
-        return null;
+        throw new ProductoNoEncontradoException("Producto no encontrado");
     }
 
-    public Cliente buscarCliente(int id){
-
-        if(cc==0){
-            System.out.println("No hay clientes registrados.");
-            return null;
+    public Cliente buscarCliente(int id)throws Exception{
+        for(Cliente c : clientes){
+            if(c.getId() == id){
+                return c;
+            }
         }
 
-        for(int i=0;i<cc;i++)
-            if(clientes[i].getId()==id)
-                return clientes[i];
-
-        System.out.println("Cliente no encontrado.");
-        return null;
+        throw new Exception("Cliente no encontrado.");
     }
 
-    public Pedido buscarPedido(int id){
+    public Pedido buscarPedido(int id)throws PedidoInvalidoException{
 
-        if(cd==0){
-            System.out.println("No hay pedidos registrados.");
-            return null;
+        for(Pedido p : pedidos){
+            if(p.getId() == id){
+                return p;
+            }
+        }
+        throw new PedidoInvalidoException("Pedido no encontrado");
+    }
+
+    public void buscarProductoPorNombre(String nombre) throws ProductoNoEncontradoException{
+        if(nombre == null || nombre.trim().isEmpty()){
+            throw new IllegalArgumentException("El nombre no debe estar vacio");
         }
 
-        for(int i=0;i<cd;i++)
-            if(pedidos[i].getId()==id)
-                return pedidos[i];
+        String buscado = nombre.trim().toLowerCase();
 
-        System.out.println("Pedido no encontrado.");
-        return null;
+        for(Producto p : productos){
+            if(p.getNombre().toLowerCase().contains(buscado)){
+                System.out.println("Producto encontrado: ");
+                System.out.println("ID " + p.getId() +
+                                    "\nNombre: " + p.getNombre() + 
+                                    "\nPrecio: " + p.getPrecio() +
+                                    "\nStock: " + p.getStock()
+                );
+                return;
+            }
+        }
+
+        throw new ProductoNoEncontradoException("El producto con el nombre ingresado no existe");
+    }
+
+    public void agregarProductoAPedido(int idPedido, int idProducto, int cantidad)throws Exception{
+        Pedido pedido = buscarPedido(idPedido);
+
+        Producto producto = null;
+
+        for(Producto p : productos){
+            if(p.getId() == idProducto){
+                producto = p;
+                break;
+            }
+        }
+
+        if(producto == null){
+            throw new ProductoNoEncontradoException("Producto no encontrado");
+        }
+
+        pedido.agregarProducto(producto, cantidad);
+        System.out.println("Producto agregado al pedido correctamente");
+    }
+
+    public void cambiarEstadoPedido(int idPedido, int opcion)throws Exception{
+        Pedido pedido = buscarPedido(idPedido);
+
+        if(opcion == 1){
+            pedido.confirmar();
+            System.out.println("Pedido confirmado");
+        }else{
+            pedido.cancelar();
+            System.out.println("Pedido cancelado");
+        }
     }
 
     public void crearPedido(int id,Cliente c){
 
-        if(existePedido(id))
+        if(existePedido(id)){
             throw new IllegalArgumentException("ID de pedido duplicado");
-
-        if(c==null){
-            System.out.println("Cliente inválido.");
-            return;
         }
 
-        pedidos[cd++] = new Pedido(id, c ,20);
+        if(c == null){
+            throw new IllegalArgumentException("Cliente inválido.");
+        
+        }
+
+        pedidos.add(new Pedido(id, c));
         System.out.println("Pedido creado en estado BORRADOR.");
     }
 
     public void listarProductos(){
 
-        if(cp == 0){
+        if(productos.isEmpty()){
             System.out.println("No hay productos registrados.");
             return;
         }
 
-        System.out.println("\nLista de productos:");
-        for(int i=0;i<cp;i++){
-            System.out.println("ID del producto: " +
-                productos[i].getId() +  " - " +
-                "Nombre:" +
-                productos[i].getNombre()+
-                " | Precio: "+productos[i].getPrecio()+
-                " | Stock: "+productos[i].getStock()
+        System.out.println("\n====Lista de productos====");
+        for(Producto p : productos){
+            System.out.println("ID del producto: " + p.getId() + 
+                                "\nNombre: " + p.getNombre()+
+                                "\nPrecio: " + p.getPrecio()+
+                                "\nStock: " + p.getStock()
             );
         }
     }
 
     public void listarPedidos(){
 
-        if(cd == 0){
+        if(pedidos.isEmpty()){
             System.out.println("No hay pedidos registrados.");
             return;
         }
 
-        System.out.println("\nLista de pedidos:");
-        for(int i = 0; i < cd; i++){
+        System.out.println("\n====Lista de pedidos====");
+        for(Pedido p : pedidos){
             System.out.println(
-                "Pedido " + pedidos[i].getId()+
-                " | Estado: " + pedidos[i].getEstado()
+                "Pedido " + p.getId()+
+                "\nEstado: " + p.getEstado()
+            );
+        }
+    }
+
+    public void listarClientes(){
+        if(clientes.isEmpty()){
+            System.out.println("No hay clientes registrados");
+            return;
+        }
+
+        System.out.println("\n====Lista de clientes====");
+        for(Cliente c : clientes){
+            System.out.println("ID: " + c.getId() +
+                                "\nNombre: " + c.getNombre()
             );
         }
     }

@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        SistemaDeGestionDePedidos sistema = new SistemaDeGestionDePedidos(50, 50, 50);
+        SistemaDeGestionDePedidos sistema = new SistemaDeGestionDePedidos();
 
         int option;
 
@@ -17,7 +17,9 @@ public class Main {
             System.out.println("5. Ver detalle de pedido");
             System.out.println("6. Listar productos");
             System.out.println("7. Listar pedidos");
-            System.out.println("8. Cambiar estado de pedido");
+            System.out.println("8. Listar Clientes");
+            System.out.println("9. Cambiar estado de pedido");
+            System.out.println("10. Buscar producto por nombre");
             System.out.println("0. Salir");
 
             System.out.print("Seleccione una opcion: ");
@@ -66,22 +68,21 @@ public class Main {
                         System.out.print("ID Cliente: ");
                         int idcl = sc.nextInt();
 
-                        Cliente c = sistema.buscarCliente(idcl);
-
-                        sistema.crearPedido(idp, c);
+                        Cliente cliente = sistema.buscarCliente(idcl);
+                        sistema.crearPedido(idp, cliente);
                         break;
 
                     case 4:
                         System.out.print("ID Pedido: ");
-                        Pedido ped = sistema.buscarPedido(sc.nextInt());
+                        int ped = sc.nextInt();
 
                         System.out.print("ID Producto: ");
-                        Producto pr = sistema.buscarProducto(sc.nextInt());
+                        int pr = sc.nextInt();
 
                         System.out.print("Cantidad: ");
                         int cant = sc.nextInt();
 
-                        ped.agregarProducto(pr, cant);
+                        sistema.agregarProductoAPedido(ped, pr, cant);
                         break;
 
                     case 5:
@@ -89,11 +90,6 @@ public class Main {
                         int idd = sc.nextInt();
 
                         Pedido pdetalle = sistema.buscarPedido(idd);
-
-                        if (pdetalle == null) {
-                            System.out.println("Pedido no encontrado.");
-                            break;
-                        }
 
                         pdetalle.mostrarDetalle();
                         break;
@@ -107,16 +103,26 @@ public class Main {
                         break;
 
                     case 8:
+                        sistema.listarClientes();
+                        break;
+
+                    case 9:
                         System.out.print("ID Pedido: ");
-                        Pedido p = sistema.buscarPedido(sc.nextInt());
+                       int p = sc.nextInt();
 
                         System.out.print("1 Confirmar / 2 Cancelar: ");
                         int est = sc.nextInt();
 
-                        if (est == 1)
-                            p.confirmar();
-                        else
-                            p.cancelar();
+                        sistema.cambiarEstadoPedido(p, est);
+                        break;
+
+                    case 10:
+                        sc.nextLine();
+
+                        System.out.print("Nombre del producto: ");
+                        String nombreBusqueda = sc.nextLine();
+
+                        sistema.buscarProductoPorNombre(nombreBusqueda);
                         break;
 
                 }
