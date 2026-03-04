@@ -1,0 +1,12 @@
+>>> Reporte del Sistema <<<
+Fecha y hora: Wed Mar 04 19:15:33 AST 2026
+Total productos: 0
+Total clientes: 0
+Pedidos por estado:
+  BORRADOR: 0
+  CONFIRMADO: 0
+  PROCESADO: 0
+  CANCELADO: 0
+Ingresos totales (confirmados+procesados): 0.0
+Productos con stock bajo (<5):
+===========================

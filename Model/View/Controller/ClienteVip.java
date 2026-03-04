@@ -13,4 +13,8 @@ public class ClienteVip extends Cliente{
         return subtotal * porcentajeDescuento;
     }
 
+    public double getPorcentajeDescuento(){
+        return porcentajeDescuento;
+    }
+
 }

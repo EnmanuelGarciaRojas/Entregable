@@ -7,6 +7,7 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         SistemaDeGestionDePedidos sistema = new SistemaDeGestionDePedidos();
 
+        sistema.iniciarHilos();
         int option;
 
         do {
@@ -17,9 +18,13 @@ public class Main {
             System.out.println("5. Ver detalle de pedido");
             System.out.println("6. Listar productos");
             System.out.println("7. Listar pedidos");
-            System.out.println("8. Listar Clientes");
-            System.out.println("9. Cambiar estado de pedido");
-            System.out.println("10. Buscar producto por nombre");
+            System.out.println("8. Guardar sistema");
+            System.out.println("9. Cargar sistema desde archivos");
+            System.out.println("10. Generar reporte del sistema");
+            System.out.println("11. ver estado de procesamiento de pedido");
+            System.out.println("12. Listar clientes");
+            System.out.println("13. Cambiar estado de pedido");
+            System.out.println("14. Buscar producto por nombre");
             System.out.println("0. Salir");
 
             System.out.print("Seleccione una opcion: ");
@@ -105,20 +110,36 @@ public class Main {
                         break;
 
                     case 8:
-                        sistema.listarClientes();
+                        sistema.guardarSistema();
                         break;
 
                     case 9:
-                        System.out.print("ID Pedido: ");
-                       int p = sc.nextInt();
-
-                        System.out.print("1 Confirmar / 2 Cancelar: ");
-                        int est = sc.nextInt();
-
-                        sistema.cambiarEstadoPedido(p, est);
+                        sistema.cargarSistema();
                         break;
 
                     case 10:
+                        sistema.generarReporte();
+                        System.out.println("Reporte generado");
+                        break;
+
+                    case 11:
+                        System.out.println("Pedidos en proceso (confirmados): " + sistema.getPedidosEnProceso());
+                        break;
+
+                    case 12:
+                        sistema.listarClientes();
+                        break;
+
+                    case 13:
+                        System.out.print("ID Pedido: ");
+                        int p = sc.nextInt();
+                        System.out.print("1 Confirmar / 2 Cancelar: ");
+                        int est = sc.nextInt();
+
+                        sistema.cambiarEstadoPedido(p, est );
+                        break;
+
+                    case 14:
                         sc.nextLine();
 
                         System.out.print("Nombre del producto: ");

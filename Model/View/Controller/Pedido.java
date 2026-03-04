@@ -22,8 +22,32 @@ public class Pedido {
         return id;
     }
 
+    public Cliente getCliente(){
+        return cliente;
+    }
+
     public EstadoPedido getEstado(){
         return estado;
+    }
+
+    public List<DetallePedido> getDetalles(){
+        return detalles;
+    }
+
+    public Date getFecha(){
+        return fecha;
+    }
+
+    public void setEstado(EstadoPedido estado){
+        this.estado = estado;
+    }
+
+    public void setFecha(Date fecha){
+        this.fecha = fecha;
+    }
+
+    public void agregarDetalle(DetallePedido detalle){
+        this.detalles.add(detalle);
     }
 
     public String getFechaFormatada(){
@@ -72,8 +96,16 @@ public class Pedido {
         estado = EstadoPedido.CONFIRMADO;
     }
 
+    public void procesar()throws PedidoInvalidoException{
+        if(estado != EstadoPedido.CONFIRMADO){
+            throw new PedidoInvalidoException("Solo se pueden procesar los pedidos confirmados");
+        }
+
+        estado = EstadoPedido.PROCESADO;
+    }
+
     public void cancelar(){
-        if(estado == EstadoPedido.CONFIRMADO){
+        if(estado == EstadoPedido.CONFIRMADO || estado == EstadoPedido.PROCESADO){
             for(DetallePedido d: detalles){
                 d.getProducto().aumentarStock(d.getCantidad());
             }
